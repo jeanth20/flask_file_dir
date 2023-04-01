@@ -37,3 +37,29 @@ app_fastapi.mount("/my-flask-endpoint", WSGIMiddleware(app_flask))
 In the example above, we mount the Flask app as a sub-application of the FastAPI app using the WSGIMiddleware from the starlette package. This allows the Flask app to run under the same server as the FastAPI app, and makes it accessible through the /my-flask-endpoint path.
 
 Now when you run your FastAPI app, the Flask endpoint will also be available under the path /my-flask-endpoint.
+
+
+# flask file explorer
+#@router.get("/file-directory/{token}")
+from fastapi import FastAPI
+from fastapi.responses import HTMLResponse
+from fastapi.middleware.wsgi import WSGIMiddleware
+from flask import Flask
+
+app = FastAPI()
+
+# Create a Flask application
+flask_app = Flask(__name__)
+
+# Define a Flask route
+@flask_app.route('/paperwork')
+def index():
+    return 'Hello from Flask!'
+
+# Mount the Flask application inside the FastAPI app using WSGIMiddleware
+app.mount('/flask', WSGIMiddleware(flask_app))
+
+# Define a FastAPI route
+@app.get('/')
+def read_root():
+    return {'Hello': 'World'}
